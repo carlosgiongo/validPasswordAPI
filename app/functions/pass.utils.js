@@ -48,13 +48,16 @@ function noRepeted(value) {
 function verify(_password, _rules) {
     const password = _password
     const rules = _rules || []
-    const errors = []
+    let errors = []
 
     if(rules.length > 0) {
         for (let rule of rules) {
             eval(`if(!${rule.rule}('${password}', ${rule.value})) errors.push('${rule.rule}')`)
         }
     }
+
+    //Remover duplicados dos erros
+    errors = errors.filter((item, index) => errors.indexOf(item) === index)
 
     return {
         verify: errors.length > 0 ? false : true,
