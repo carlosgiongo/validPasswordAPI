@@ -11,7 +11,7 @@ app.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}
 app.set('trust proxy', true);
 app.use(cors({
     origin: ['http://192.168.100.46:3000', 'http://localhost:3000', '192.168.100.46'],
-    methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PUT', 'PATCH'],
+    methods: ['GET', 'POST'],
     credentials: true,
     headers: ['*']
 }));

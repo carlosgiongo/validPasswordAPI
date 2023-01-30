@@ -1,24 +1,11 @@
 const { body } = require('express-validator')
-const passUtils = require('../functions/pass.utils')
+const { graphqlHTTP } = require('express-graphql');
+const passVerifyUtils = require('../functions/pass.utils')
 
 module.exports = function(app) {
     app.post('/verify', (req, res) => {
         try{
-            const password = req.body.password
-            const rules = req.body.rules || []
-            const errors = []
-
-            if(rules.length > 0) {
-                for (let rule of rules) {
-                    eval(`if(!passUtils.${rule.rule}('${password}', ${rule.value})) errors.push('${rule.rule}')`)
-                }
-            }
-
-            return res.status(200).send({
-                verify: errors.length > 0 ? false : true,
-                noMatch: errors
-            })
-
+            res.status(200).json(passVerifyUtils.verify(req.body.password, req.body.rules))
         } catch (err) {
             console.log("[ERRO]:", err.message)
             
@@ -33,4 +20,10 @@ module.exports = function(app) {
             })
         }        
     })
+
+    app.post('/graphql', graphqlHTTP({
+        schema: require('../graphql/schemas/passVerify.schema').schema,
+        rootValue: require('../graphql/schemas/passVerify.schema').root,
+        graphiql: true
+    }))
 }

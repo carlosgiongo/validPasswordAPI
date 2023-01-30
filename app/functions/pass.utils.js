@@ -45,13 +45,31 @@ function noRepeted(value) {
     return !/(.)\1{1,}/.test(value)
 }
 
+function verify(_password, _rules) {
+    const password = _password
+    const rules = _rules || []
+    const errors = []
+
+    if(rules.length > 0) {
+        for (let rule of rules) {
+            eval(`if(!${rule.rule}('${password}', ${rule.value})) errors.push('${rule.rule}')`)
+        }
+    }
+
+    return {
+        verify: errors.length > 0 ? false : true,
+        noMatch: errors
+    }
+}
+
 module.exports = {
     minSize,
     minUppercase,
     minLowercase,
     minDigit,
     minSpecialChars,
-    noRepeted
+    noRepeted, 
+    verify
 }
       
 
